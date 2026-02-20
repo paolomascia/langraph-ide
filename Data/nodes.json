@@ -1,0 +1,726 @@
+[
+  {
+    "category": "Control",
+    "description": "Flow control nodes",
+    "icon": "\u2699",
+    "color": "#3FB950",
+    "nodes": [
+      {
+        "name": "start",
+        "display_name": "Start",
+        "type": "Start",
+        "description": "Entry point of the agent graph",
+        "icon": "\u25B6",
+        "color": "#3FB950",
+        "parameters": [],
+        "has_input_connector": false,
+        "has_output_connector": true,
+        "code_template": ""
+      },
+      {
+        "name": "end",
+        "display_name": "End",
+        "type": "End",
+        "description": "Exit point of the agent graph",
+        "icon": "\u25A0",
+        "color": "#F85149",
+        "parameters": [],
+        "has_input_connector": true,
+        "has_output_connector": false,
+        "code_template": ""
+      }
+    ]
+  },
+  {
+    "category": "Input/Output",
+    "description": "Input and output handling nodes",
+    "icon": "\u21C4",
+    "color": "#58A6FF",
+    "nodes": [
+      {
+        "name": "input_node",
+        "display_name": "Input",
+        "type": "Input",
+        "description": "Receives user input and adds it to state",
+        "icon": "\u2192",
+        "color": "#58A6FF",
+        "parameters": [
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key to store input",
+            "required": true,
+            "default": "input"
+          }
+        ],
+        "output_variables": ["input"],
+        "code_template": "def {function_name}(state: State) -> dict:\n    return {{\"{input_key}\": state.get(\"{input_key}\", \"\")}}"
+      },
+      {
+        "name": "output_node",
+        "display_name": "Output",
+        "type": "Output",
+        "description": "Formats and returns the final output",
+        "icon": "\u2190",
+        "color": "#58A6FF",
+        "parameters": [
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key containing output",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "format_template",
+            "display_name": "Format Template",
+            "type": "string",
+            "description": "Optional template for formatting output",
+            "required": false,
+            "multiline": true
+          }
+        ],
+        "input_variables": ["output"],
+        "code_template": "def {function_name}(state: State) -> dict:\n    return {{\"{output_key}\": state.get(\"{output_key}\", \"\")}}"
+      }
+    ]
+  },
+  {
+    "category": "LLM",
+    "description": "Large Language Model nodes",
+    "icon": "\u2605",
+    "color": "#A371F7",
+    "nodes": [
+      {
+        "name": "openai_llm",
+        "display_name": "OpenAI",
+        "type": "LLM",
+        "description": "OpenAI LLM call (GPT-4o, GPT-4, etc.)",
+        "icon": "\u2605",
+        "color": "#A371F7",
+        "parameters": [
+          {
+            "name": "model",
+            "display_name": "Model",
+            "type": "string",
+            "description": "OpenAI model to use",
+            "required": true,
+            "default": "gpt-4o",
+            "options": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo", "o1", "o1-mini", "o3-mini"]
+          },
+          {
+            "name": "base_url",
+            "display_name": "Base URL",
+            "type": "string",
+            "description": "Custom API endpoint URL (leave empty for default)",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key containing input for LLM",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store LLM response",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "temperature",
+            "display_name": "Temperature",
+            "type": "number",
+            "description": "LLM temperature (0-1)",
+            "required": false,
+            "default": 0.7,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "max_tokens",
+            "display_name": "Max Tokens",
+            "type": "number",
+            "description": "Maximum tokens in response",
+            "required": false,
+            "default": 4096
+          }
+        ],
+        "input_variables": ["prompt"],
+        "output_variables": ["output"],
+        "code_template": ""
+      },
+      {
+        "name": "anthropic_llm",
+        "display_name": "Anthropic",
+        "type": "LLM",
+        "description": "Anthropic LLM call (Claude Sonnet, Opus, Haiku)",
+        "icon": "\u2605",
+        "color": "#D2A8FF",
+        "parameters": [
+          {
+            "name": "model",
+            "display_name": "Model",
+            "type": "string",
+            "description": "Anthropic model to use",
+            "required": true,
+            "default": "claude-sonnet-4-20250514",
+            "options": ["claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-5-haiku-20241022", "claude-3-opus-20240229"]
+          },
+          {
+            "name": "base_url",
+            "display_name": "Base URL",
+            "type": "string",
+            "description": "Custom API endpoint URL (leave empty for default)",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key containing input for LLM",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store LLM response",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "temperature",
+            "display_name": "Temperature",
+            "type": "number",
+            "description": "LLM temperature (0-1)",
+            "required": false,
+            "default": 0.7,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "max_tokens",
+            "display_name": "Max Tokens",
+            "type": "number",
+            "description": "Maximum tokens in response",
+            "required": false,
+            "default": 4096
+          }
+        ],
+        "input_variables": ["prompt"],
+        "output_variables": ["output"],
+        "code_template": ""
+      },
+      {
+        "name": "gemini_llm",
+        "display_name": "Gemini",
+        "type": "LLM",
+        "description": "Google Gemini LLM call",
+        "icon": "\u2605",
+        "color": "#8B9CF7",
+        "parameters": [
+          {
+            "name": "model",
+            "display_name": "Model",
+            "type": "string",
+            "description": "Gemini model to use",
+            "required": true,
+            "default": "gemini-2.0-flash",
+            "options": ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-1.5-flash"]
+          },
+          {
+            "name": "base_url",
+            "display_name": "Base URL",
+            "type": "string",
+            "description": "Custom API endpoint URL (leave empty for default)",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key containing input for LLM",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store LLM response",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "temperature",
+            "display_name": "Temperature",
+            "type": "number",
+            "description": "LLM temperature (0-1)",
+            "required": false,
+            "default": 0.7,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "max_tokens",
+            "display_name": "Max Tokens",
+            "type": "number",
+            "description": "Maximum tokens in response",
+            "required": false,
+            "default": 4096
+          }
+        ],
+        "input_variables": ["prompt"],
+        "output_variables": ["output"],
+        "code_template": ""
+      },
+      {
+        "name": "mistral_llm",
+        "display_name": "Mistral",
+        "type": "LLM",
+        "description": "Mistral AI LLM call",
+        "icon": "\u2605",
+        "color": "#F7A371",
+        "parameters": [
+          {
+            "name": "model",
+            "display_name": "Model",
+            "type": "string",
+            "description": "Mistral model to use",
+            "required": true,
+            "default": "mistral-large-latest",
+            "options": ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "open-mistral-nemo", "codestral-latest"]
+          },
+          {
+            "name": "base_url",
+            "display_name": "Base URL",
+            "type": "string",
+            "description": "Custom API endpoint URL (leave empty for default)",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key containing input for LLM",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store LLM response",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "temperature",
+            "display_name": "Temperature",
+            "type": "number",
+            "description": "LLM temperature (0-1)",
+            "required": false,
+            "default": 0.7,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "max_tokens",
+            "display_name": "Max Tokens",
+            "type": "number",
+            "description": "Maximum tokens in response",
+            "required": false,
+            "default": 4096
+          }
+        ],
+        "input_variables": ["prompt"],
+        "output_variables": ["output"],
+        "code_template": ""
+      },
+      {
+        "name": "ollama_llm",
+        "display_name": "Ollama",
+        "type": "LLM",
+        "description": "Ollama local LLM call",
+        "icon": "\u2605",
+        "color": "#7EE787",
+        "parameters": [
+          {
+            "name": "model",
+            "display_name": "Model",
+            "type": "string",
+            "description": "Ollama model to use",
+            "required": true,
+            "default": "llama3.1",
+            "options": ["llama3.1", "llama3", "mistral", "codellama", "phi3", "gemma2", "qwen2.5"]
+          },
+          {
+            "name": "base_url",
+            "display_name": "Base URL",
+            "type": "string",
+            "description": "Ollama server URL",
+            "required": false,
+            "default": "http://localhost:11434"
+          },
+          {
+            "name": "input_key",
+            "display_name": "Input Key",
+            "type": "string",
+            "description": "State key containing input for LLM",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store LLM response",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "temperature",
+            "display_name": "Temperature",
+            "type": "number",
+            "description": "LLM temperature (0-1)",
+            "required": false,
+            "default": 0.7,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "max_tokens",
+            "display_name": "Max Tokens",
+            "type": "number",
+            "description": "Maximum tokens in response",
+            "required": false,
+            "default": 4096
+          }
+        ],
+        "input_variables": ["prompt"],
+        "output_variables": ["output"],
+        "code_template": ""
+      },
+      {
+        "name": "prompt_builder",
+        "display_name": "Prompt Builder",
+        "type": "Prompt",
+        "description": "Builds a prompt from template and state variables",
+        "icon": "\u270E",
+        "color": "#A371F7",
+        "parameters": [
+          {
+            "name": "template",
+            "display_name": "Prompt Template",
+            "type": "string",
+            "description": "Prompt template with {variable} placeholders",
+            "required": true,
+            "multiline": true,
+            "default": "You are a helpful assistant.\n\nUser: {input}\n\nAssistant:"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store built prompt",
+            "required": true,
+            "default": "prompt"
+          }
+        ],
+        "input_variables": ["input"],
+        "output_variables": ["prompt"],
+        "code_template": "def {function_name}(state: State) -> dict:\n    template = \"\"\"{template}\"\"\"\n    prompt = template.format(**state)\n    return {{\"{output_key}\": prompt}}"
+      }
+    ]
+  },
+  {
+    "category": "Tools",
+    "description": "Custom tool and function nodes",
+    "icon": "\u2692",
+    "color": "#FFA657",
+    "nodes": [
+      {
+        "name": "python_code",
+        "display_name": "Python Code",
+        "type": "Tool",
+        "description": "Execute custom Python code",
+        "icon": "\u2261",
+        "color": "#FFA657",
+        "parameters": [
+          {
+            "name": "code",
+            "display_name": "Python Code",
+            "type": "string",
+            "description": "Python code to execute. Use 'state' dict for input/output.",
+            "required": true,
+            "multiline": true,
+            "default": "# Access state variables\nresult = state.get('input', '')\n\n# Process data\nresult = result.upper()\n\n# Return updated state\nreturn {'output': result}"
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n{code}"
+      },
+      {
+        "name": "api_call",
+        "display_name": "API Call",
+        "type": "Tool",
+        "description": "Make an HTTP API call",
+        "icon": "\u21C4",
+        "color": "#FFA657",
+        "parameters": [
+          {
+            "name": "url",
+            "display_name": "URL",
+            "type": "string",
+            "description": "API endpoint URL",
+            "required": true
+          },
+          {
+            "name": "method",
+            "display_name": "Method",
+            "type": "string",
+            "description": "HTTP method",
+            "required": true,
+            "default": "GET",
+            "options": ["GET", "POST", "PUT", "DELETE"]
+          },
+          {
+            "name": "body_key",
+            "display_name": "Body Key",
+            "type": "string",
+            "description": "State key containing request body",
+            "required": false
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store response",
+            "required": true,
+            "default": "api_response"
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n    import requests\n    response = requests.{method}(\"{url}\")\n    return {{\"{output_key}\": response.json()}}"
+      }
+    ]
+  },
+  {
+    "category": "Logic",
+    "description": "Conditional and routing nodes",
+    "icon": "\u2442",
+    "color": "#79C0FF",
+    "nodes": [
+      {
+        "name": "router",
+        "display_name": "Router",
+        "type": "Router",
+        "description": "Routes to different nodes based on state",
+        "icon": "\u2442",
+        "color": "#79C0FF",
+        "parameters": [
+          {
+            "name": "condition_key",
+            "display_name": "Condition Key",
+            "type": "string",
+            "description": "State key to evaluate for routing",
+            "required": true,
+            "default": "output"
+          },
+          {
+            "name": "routing_logic",
+            "display_name": "Routing Logic",
+            "type": "string",
+            "description": "Python code that returns route name",
+            "required": true,
+            "multiline": true,
+            "default": "if 'error' in state.get('output', ''):\n    return 'error_handler'\nreturn 'continue'"
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> str:\n{routing_logic}"
+      },
+      {
+        "name": "condition",
+        "display_name": "Condition",
+        "type": "Condition",
+        "description": "Evaluates a condition and sets a flag",
+        "icon": "?",
+        "color": "#79C0FF",
+        "parameters": [
+          {
+            "name": "condition",
+            "display_name": "Condition",
+            "type": "string",
+            "description": "Python condition expression",
+            "required": true,
+            "default": "len(state.get('input', '')) > 0"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store result",
+            "required": true,
+            "default": "condition_result"
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n    result = {condition}\n    return {{\"{output_key}\": result}}"
+      }
+    ]
+  },
+  {
+    "category": "Memory",
+    "description": "State and memory management nodes",
+    "icon": "\u2630",
+    "color": "#7EE787",
+    "nodes": [
+      {
+        "name": "memory_store",
+        "display_name": "Store to Memory",
+        "type": "Memory",
+        "description": "Stores a value in persistent memory",
+        "icon": "\u2193",
+        "color": "#7EE787",
+        "parameters": [
+          {
+            "name": "source_key",
+            "display_name": "Source Key",
+            "type": "string",
+            "description": "State key to read from",
+            "required": true
+          },
+          {
+            "name": "memory_key",
+            "display_name": "Memory Key",
+            "type": "string",
+            "description": "Key to store in memory",
+            "required": true
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n    # Store value in memory\n    memory_key = \"{memory_key}\"\n    value = state.get(\"{source_key}\", \"\")\n    state[\"memory\"] = state.get(\"memory\", {{}})\n    state[\"memory\"][memory_key] = value\n    return {{\"memory\": state[\"memory\"]}}"
+      },
+      {
+        "name": "memory_retrieve",
+        "display_name": "Retrieve from Memory",
+        "type": "Memory",
+        "description": "Retrieves a value from persistent memory",
+        "icon": "\u2191",
+        "color": "#7EE787",
+        "parameters": [
+          {
+            "name": "memory_key",
+            "display_name": "Memory Key",
+            "type": "string",
+            "description": "Key to retrieve from memory",
+            "required": true
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store retrieved value",
+            "required": true
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n    memory = state.get(\"memory\", {{}})\n    value = memory.get(\"{memory_key}\", \"\")\n    return {{\"{output_key}\": value}}"
+      },
+      {
+        "name": "state_update",
+        "display_name": "Update State",
+        "type": "Memory",
+        "description": "Updates multiple state values",
+        "icon": "\u21BB",
+        "color": "#7EE787",
+        "parameters": [
+          {
+            "name": "updates",
+            "display_name": "State Updates",
+            "type": "string",
+            "description": "Python dict of state updates",
+            "required": true,
+            "multiline": true,
+            "default": "{\n    \"key1\": \"value1\",\n    \"key2\": state.get(\"other_key\", \"\")\n}"
+          }
+        ],
+        "code_template": "def {function_name}(state: State) -> dict:\n    updates = {updates}\n    return updates"
+      }
+    ]
+  },
+  {
+    "category": "RAG",
+    "description": "Retrieval Augmented Generation nodes",
+    "icon": "\uD83D\uDD0D",
+    "color": "#F778BA",
+    "nodes": [
+      {
+        "name": "rag_augment",
+        "display_name": "RAG Augment",
+        "type": "RAG",
+        "description": "Queries VectorDB for relevant context and augments the prompt for RAG",
+        "icon": "\uD83D\uDD0D",
+        "color": "#F778BA",
+        "parameters": [
+          {
+            "name": "query_key",
+            "display_name": "Query Key",
+            "type": "string",
+            "description": "State key containing the search query text",
+            "required": true,
+            "default": "input"
+          },
+          {
+            "name": "output_key",
+            "display_name": "Output Key",
+            "type": "string",
+            "description": "State key to store the augmented prompt",
+            "required": true,
+            "default": "prompt"
+          },
+          {
+            "name": "top_k",
+            "display_name": "Top K Results",
+            "type": "number",
+            "description": "Number of similar chunks to retrieve",
+            "required": false,
+            "default": 5,
+            "input": { "type": "number", "min": 1, "max": 50 }
+          },
+          {
+            "name": "threshold",
+            "display_name": "Similarity Threshold",
+            "type": "number",
+            "description": "Minimum similarity score (0.0-1.0)",
+            "required": false,
+            "default": 0.0,
+            "input": { "type": "number", "min": 0, "max": 1 }
+          },
+          {
+            "name": "tag_filter",
+            "display_name": "Tag Filter",
+            "type": "string",
+            "description": "Filter by document tags (comma-separated, leave empty for all)",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "prompt_template",
+            "display_name": "Augment Template",
+            "type": "string",
+            "description": "Template for the augmented prompt. Use {context} and {query} placeholders.",
+            "required": true,
+            "multiline": true,
+            "default": "Use the following context to answer the question.\n\nContext:\n{context}\n\nQuestion: {query}\n\nAnswer:"
+          }
+        ],
+        "input_variables": ["input"],
+        "output_variables": ["prompt"],
+        "code_template": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+<Application x:Class="LangraphIDE.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/LangraphIDE;component/Themes/DarkTheme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/LangraphIDE;component/Styles/CommonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Converters -->
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+            <!-- App-specific Colors -->
+            <Color x:Key="PurpleColor">#A371F7</Color>
+            <Color x:Key="OrangeColor">#FFA657</Color>
+            <!-- App-specific Brushes -->
+            <SolidColorBrush x:Key="PurpleBrush" Color="#A371F7"/>
+            <SolidColorBrush x:Key="OrangeBrush" Color="#FFA657"/>
+
+            <!-- Drop Shadow Effect for floating panels -->
+            <DropShadowEffect x:Key="PanelShadow"
+                              BlurRadius="15"
+                              ShadowDepth="3"
+                              Direction="270"
+                              Opacity="0.5"
+                              Color="#000000"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

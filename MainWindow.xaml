@@ -1,0 +1,316 @@
+<Window x:Class="LangraphIDE.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:LangraphIDE.Controls"
+        Title="Langraph IDE - Visual Editor"
+        Height="800" Width="1400"
+        MinHeight="600" MinWidth="1000"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Icon="langraph.ico">
+
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top" Padding="4,2">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Agent" InputGestureText="Ctrl+N" Click="Menu_NewAgent_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M4,2 L4,14 L12,14 L12,6 L8,2 Z M8,2 L8,6 L12,6"
+                              Stroke="#8B949E" StrokeThickness="1.2" Fill="Transparent" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Open..." InputGestureText="Ctrl+O" Click="Menu_Open_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M1,4 L1,12 L13,12 L13,6 L7,6 L5,4 Z"
+                              Stroke="#8B949E" StrokeThickness="1.2" Fill="Transparent" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Click="Menu_Save_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M2,2 L2,14 L14,14 L14,5 L11,2 Z"
+                              Stroke="#8B949E" StrokeThickness="1.2" Fill="Transparent" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save _As..." Click="Menu_SaveAs_Click"/>
+                <Separator/>
+                <MenuItem Header="_Import Graph..." Click="Menu_Import_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M7,10 L7,2 M4,5 L7,2 L10,5 M2,12 L14,12"
+                              Stroke="#8B949E" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="E_xport Graph..." Click="Menu_ExportGraph_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M7,2 L7,10 M4,7 L7,10 L10,7 M2,12 L14,12"
+                              Stroke="#8B949E" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export _Python Code..." Click="Menu_ExportCode_Click">
+                    <MenuItem.Icon>
+                        <Path Data="M7,2 L7,10 M4,7 L7,10 L10,7 M2,12 L14,12"
+                              Stroke="#A371F7" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="E_xit" Click="Menu_Exit_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" InputGestureText="Ctrl+Z" Click="Menu_Undo_Click"/>
+                <MenuItem Header="_Redo" InputGestureText="Ctrl+Y" Click="Menu_Redo_Click"/>
+                <Separator/>
+                <MenuItem Header="Cu_t" InputGestureText="Ctrl+X" Click="Menu_Cut_Click"/>
+                <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Click="Menu_Copy_Click"/>
+                <MenuItem Header="_Paste" InputGestureText="Ctrl+V" Click="Menu_Paste_Click"/>
+                <MenuItem Header="_Delete" InputGestureText="Del" Click="Menu_Delete_Click"/>
+                <Separator/>
+                <MenuItem Header="Select _All" InputGestureText="Ctrl+A" Click="Menu_SelectAll_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_View">
+                <MenuItem x:Name="MenuViewNodes" Header="_Node Library" IsCheckable="True" IsChecked="True" Click="Menu_TogglePanel_Click" Tag="NodesPanel"/>
+                <MenuItem x:Name="MenuViewProperties" Header="_Properties Panel" IsCheckable="True" IsChecked="True" Click="Menu_TogglePanel_Click" Tag="PropertiesPanel"/>
+                <Separator/>
+                <MenuItem Header="Zoom _In" InputGestureText="Ctrl++" Click="Menu_ZoomIn_Click"/>
+                <MenuItem Header="Zoom _Out" InputGestureText="Ctrl+-" Click="Menu_ZoomOut_Click"/>
+                <MenuItem Header="Zoom _Reset" InputGestureText="Ctrl+0" Click="Menu_ZoomReset_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Click="Menu_About_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Main Content -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftColumnDef" Width="280" MinWidth="200"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" MinWidth="400"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition x:Name="RightColumnDef" Width="320" MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel: Node Library -->
+            <Border x:Name="NodesPanel"
+                    Grid.Column="0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource SurfaceLightBrush}"
+                            Padding="12,10">
+                        <TextBlock Text="Node Library"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Border>
+
+                    <!-- Search -->
+                    <Border Grid.Row="1" Padding="8">
+                        <Grid>
+                            <TextBox x:Name="SearchBox"
+                                     Padding="8,6"
+                                     Background="{DynamicResource BackgroundBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}"
+                                     Foreground="{DynamicResource TextPrimaryBrush}"
+                                     TextChanged="SearchBox_TextChanged"/>
+                            <TextBlock x:Name="SearchPlaceholder"
+                                       Text="Search nodes..."
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Padding="10,8"
+                                       IsHitTestVisible="False"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Node Categories TreeView -->
+                    <TreeView x:Name="NodeCategoriesTree"
+                              Grid.Row="2"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Padding="4"
+                              PreviewMouseLeftButtonDown="NodeCategoriesTree_PreviewMouseLeftButtonDown"
+                              MouseMove="NodeCategoriesTree_MouseMove">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Nodes}">
+                                <StackPanel Orientation="Horizontal" Margin="2">
+                                    <TextBlock Text="{Binding Icon}"
+                                               FontSize="14"
+                                               Foreground="{Binding Color}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <HierarchicalDataTemplate.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="4,2" Cursor="Hand" Tag="{Binding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Icon}"
+                                                           FontSize="12"
+                                                           Foreground="{Binding Color}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,6,0"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                                               FontSize="12"/>
+                                                    <TextBlock Text="{Binding Description}"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                                               FontSize="10"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               MaxWidth="200"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </HierarchicalDataTemplate.ItemTemplate>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Grid>
+            </Border>
+
+            <!-- Left Splitter -->
+            <GridSplitter Grid.Column="1"
+                          Width="4"
+                          Background="Transparent"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          Cursor="SizeWE"/>
+
+            <!-- Center: Canvas -->
+            <controls:AgentCanvas x:Name="AgentCanvas"
+                                  Grid.Column="2"
+                                  NodeSelected="AgentCanvas_NodeSelected"
+                                  SelectionCleared="AgentCanvas_SelectionCleared"
+                                  GenerateCodeRequested="AgentCanvas_GenerateCodeRequested"/>
+
+            <!-- Right Splitter -->
+            <GridSplitter Grid.Column="3"
+                          Width="4"
+                          Background="Transparent"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          Cursor="SizeWE"/>
+
+            <!-- Right Panel: Properties and Output -->
+            <Border x:Name="PropertiesPanel"
+                    Grid.Column="4"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Properties Panel -->
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource SurfaceLightBrush}"
+                                Padding="12,10">
+                            <TextBlock Text="Properties"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        </Border>
+
+                        <ScrollViewer Grid.Row="1"
+                                      VerticalScrollBarVisibility="Auto"
+                                      Padding="12">
+                            <StackPanel x:Name="PropertiesContent">
+                                <TextBlock x:Name="NoSelectionText"
+                                           Text="Select a node to view its properties"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           FontStyle="Italic"
+                                           TextWrapping="Wrap"/>
+
+                                <!-- Node Properties (shown when node selected) -->
+                                <StackPanel x:Name="NodePropertiesPanel" Visibility="Collapsed">
+                                    <TextBlock x:Name="SelectedNodeName"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBlock x:Name="SelectedNodeType"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               Margin="0,0,0,12"/>
+
+                                    <!-- Parameters will be added dynamically -->
+                                    <StackPanel x:Name="ParametersPanel"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- Splitter -->
+                    <GridSplitter Grid.Row="1"
+                                  Height="4"
+                                  Background="Transparent"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Center"
+                                  Cursor="SizeNS"/>
+
+                    <!-- Output / Code Preview -->
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource SurfaceLightBrush}"
+                                Padding="12,10">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Code Preview"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                <Button Content="Copy"
+                                        Style="{DynamicResource ToolbarButton}"
+                                        Click="BtnCopyCode_Click"
+                                        Margin="12,0,0,0"
+                                        Padding="8,2"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBox x:Name="CodePreviewBox"
+                                 Grid.Row="1"
+                                 IsReadOnly="True"
+                                 FontFamily="Consolas"
+                                 FontSize="11"
+                                 Background="{DynamicResource BackgroundBrush}"
+                                 Foreground="{DynamicResource TextPrimaryBrush}"
+                                 BorderThickness="0"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 Padding="12"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

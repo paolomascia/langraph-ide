@@ -1,0 +1,66 @@
+## .NET / C# gitignore
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docview
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/repositories.config
+*.lock.json
+
+# MSBuild
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# User-specific files
+*.rsuser
+*.user
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+
+# Rider
+.idea/
+*.sln.iml
+
+# Publish profiles
+**/Properties/PublishProfiles/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# OS
+.DS_Store
+
+# Claude Code memory
+.claude/
+
+# Root-level screenshot (canonical copy is in docs/screenshots/)
+/langgraph-ide.png
