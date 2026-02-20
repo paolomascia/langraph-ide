@@ -2,7 +2,7 @@
 
 A standalone visual editor for designing and generating [Langraph](https://github.com/langchain-ai/langgraph) AI agent workflows. Build complex multi-node agent graphs through a drag-and-drop interface and instantly export them as ready-to-run Python code — no backend server required.
 
-![Langraph IDE Screenshot](docs/screenshots/langgraph-ide.png)
+![Langraph IDE Screenshot](./langraph-ide.png)
 
 ---
 
