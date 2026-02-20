@@ -32,7 +32,7 @@ A standalone visual editor for designing and generating [Langraph](https://githu
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd langgraph-ide
+cd langraph-ide
 
 # Restore dependencies and build
 dotnet build LangraphIDE.csproj
@@ -78,7 +78,7 @@ Or open `LangraphIDE.csproj` directly in **Visual Studio 2022** or **JetBrains R
 ## Project Structure
 
 ```
-langgraph-ide/
+langraph-ide/
 ├── LangraphIDE.csproj          # Project file (.NET 8, WPF)
 ├── App.xaml / App.xaml.cs      # Application entry point & theme initialization
 ├── MainWindow.xaml / .cs       # Main window layout and logic
